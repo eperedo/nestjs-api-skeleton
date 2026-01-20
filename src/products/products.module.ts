@@ -5,13 +5,13 @@ import { UserPrismaRepository } from '../data/users/UserPrismaRepository';
 import { GetProductByIdUseCase } from '../domain/products/GetProductByIdUseCase';
 import { SaveProductUseCase } from '../domain/products/SaveProductUseCase';
 import { PrismaClient } from '../generated/prisma/client';
-import { prisma } from '../prisma-client';
 import { ProductsController } from './products.controller';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
+  imports: [PrismaModule],
   controllers: [ProductsController],
   providers: [
-    { provide: PrismaClient, useValue: prisma },
     {
       provide: ProductPrismaRepository,
       useFactory: (prismaClient: PrismaClient) =>
