@@ -64,7 +64,7 @@ describe('SaveProductUseCase', () => {
         userId: adminUser.id,
         product: { ...validProduct, code: 'SHORT' },
       }),
-    ).rejects.toThrow('Invalid product');
+    ).rejects.toThrow('PRODUCT_VALIDATION_FAILED');
   });
 
   it('saves product when user is admin and data valid', async () => {
