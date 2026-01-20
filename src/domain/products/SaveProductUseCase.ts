@@ -25,7 +25,7 @@ export class SaveProductUseCase {
 
     const productResult = Product.build(product);
     if (!productResult.isSuccess()) {
-      throw new Error('Invalid product');
+      throw new Error('PRODUCT_VALIDATION_FAILED');
     }
 
     await this.options.productRepository.save(productResult.value.data);
