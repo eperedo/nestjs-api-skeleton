@@ -1,3 +1,4 @@
+import { ErrorCodes } from '../generic/ErrorCodes';
 import { Sale, SaleAttrs } from './Sale';
 import { SaleRepository } from './SaleRepository';
 import { CustomerRepository } from '../customers/CustomerRepository';
@@ -16,7 +17,7 @@ export class SaveSaleUseCase {
     );
 
     if (!customer.isActive) {
-      throw new Error('CUSTOMER_INACTIVE');
+      throw new Error(ErrorCodes.sales.CUSTOMER_INACTIVE);
     }
 
     const baseSubtotal = payload.items.reduce(
@@ -38,7 +39,7 @@ export class SaveSaleUseCase {
     });
 
     if (!saleResult.isSuccess()) {
-      throw new Error('SALE_VALIDATION_FAILED');
+      throw new Error(ErrorCodes.sales.VALIDATION_FAILED);
     }
 
     return this.options.saleRepository.save(saleResult.value.data);
