@@ -7,25 +7,30 @@ import { SaveProductUseCase } from '../domain/products/SaveProductUseCase';
 import { PrismaClient } from '../generated/prisma/client';
 import { ProductsController } from './products.controller';
 import { PrismaModule } from '../prisma/prisma.module';
+import {
+  CATEGORY_REPOSITORY,
+  PRODUCT_REPOSITORY,
+  USER_REPOSITORY,
+} from '../tokens/repository-tokens';
 
 @Module({
   imports: [PrismaModule],
   controllers: [ProductsController],
   providers: [
     {
-      provide: ProductPrismaRepository,
+      provide: PRODUCT_REPOSITORY,
       useFactory: (prismaClient: PrismaClient) =>
         new ProductPrismaRepository(prismaClient),
       inject: [PrismaClient],
     },
     {
-      provide: CategoryPrismaRepository,
+      provide: CATEGORY_REPOSITORY,
       useFactory: (prismaClient: PrismaClient) =>
         new CategoryPrismaRepository(prismaClient),
       inject: [PrismaClient],
     },
     {
-      provide: UserPrismaRepository,
+      provide: USER_REPOSITORY,
       useFactory: (prismaClient: PrismaClient) =>
         new UserPrismaRepository(prismaClient),
       inject: [PrismaClient],
@@ -36,7 +41,7 @@ import { PrismaModule } from '../prisma/prisma.module';
         productRepository: ProductPrismaRepository,
         categoryRepository: CategoryPrismaRepository,
       ) => new GetProductByIdUseCase({ productRepository, categoryRepository }),
-      inject: [ProductPrismaRepository, CategoryPrismaRepository],
+      inject: [PRODUCT_REPOSITORY, CATEGORY_REPOSITORY],
     },
     {
       provide: SaveProductUseCase,
@@ -44,7 +49,7 @@ import { PrismaModule } from '../prisma/prisma.module';
         productRepository: ProductPrismaRepository,
         userRepository: UserPrismaRepository,
       ) => new SaveProductUseCase({ productRepository, userRepository }),
-      inject: [ProductPrismaRepository, UserPrismaRepository],
+      inject: [PRODUCT_REPOSITORY, USER_REPOSITORY],
     },
   ],
 })
