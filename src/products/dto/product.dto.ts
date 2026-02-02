@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import type { Maybe } from 'src/utils/ts-utils';
 
 export class ProductDto {
   @IsString()
@@ -15,5 +16,5 @@ export class ProductDto {
 
   @IsOptional()
   @IsString()
-  categoryId?: string | undefined;
+  categoryId: Maybe<string>;
 }
