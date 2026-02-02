@@ -3,6 +3,7 @@ import { ProductRepository } from './ProductRepository';
 import { SaveProductUseCase } from './SaveProductUseCase';
 import { User } from '../users/User';
 import { UserRepository } from '../users/UserRepository';
+import { vi, describe, it, expect } from 'vitest';
 
 describe('SaveProductUseCase', () => {
   const adminUser = User.create({
@@ -68,7 +69,7 @@ describe('SaveProductUseCase', () => {
   });
 
   it('saves product when user is admin and data valid', async () => {
-    const saveSpy = jest.fn(() => Promise.resolve());
+    const saveSpy = vi.fn(() => Promise.resolve());
 
     const productRepository: ProductRepository = {
       getById: () => Promise.reject(new Error('Not used')),
