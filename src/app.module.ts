@@ -2,8 +2,8 @@ import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProductsModule } from './products/products.module';
-import { SalesModule } from './sales/sales.module';
+import { ProductsModule } from './products/api/products.module';
+import { SalesModule } from './sales/api/sales.module';
 
 @Module({
   imports: [ProductsModule, SalesModule],
