@@ -37,4 +37,42 @@ model Product {
   code       String
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
+  saleItems  SaleItem[]
+}
+
+model Customer {
+  id       String @id
+  name     String
+  isActive Boolean
+  type     String
+  sales    Sale[]
+}
+
+model Sale {
+  id         String       @id
+  customerId String
+  discount   Float
+  total      Float
+  items      SaleItem[]
+  transactions Transaction[]
+  customer  Customer @relation(fields: [customerId], references: [id])
+}
+
+model SaleItem {
+  saleId    String
+  productId String
+  quantity  Int
+  price     Float
+  subtotal  Float
+  sale      Sale    @relation(fields: [saleId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@id([saleId, productId])
+}
+
+model Transaction {
+  id     String @id
+  amount Float
+  saleId String
+  sale   Sale   @relation(fields: [saleId], references: [id])
 }

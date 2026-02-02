@@ -1,7 +1,9 @@
 import { Customer } from '../customers/Customer';
 import { CustomerRepository } from '../customers/CustomerRepository';
+import { UnitOfWork } from '../generic/UnitOfWork';
+import { TransactionRepository } from '../transactions/TransactionRepository';
 import { SaleRepository } from './SaleRepository';
-import { SaveSaleUseCase } from './SaveSaleUseCase';
+import { SaveSaleUseCase, SalesRepositories } from './SaveSaleUseCase';
 import { Sale, SaleAttrs } from './Sale';
 
 describe('SaveSaleUseCase', () => {
@@ -19,6 +21,7 @@ describe('SaveSaleUseCase', () => {
       },
     ],
   };
+  const transactionId = 'transaction-1';
 
   const activeBasic = Customer.create({
     id: 'customer-1',
@@ -44,6 +47,16 @@ describe('SaveSaleUseCase', () => {
   const saleRepository: SaleRepository = {
     save: (sale: Sale) => Promise.resolve(sale),
   };
+  const transactionRepository: TransactionRepository = {
+    save: (transaction) => Promise.resolve(transaction),
+  };
+  const unitOfWork: UnitOfWork<SalesRepositories> = {
+    run: (work) =>
+      work({
+        saleRepository,
+        transactionRepository,
+      }),
+  };
 
   it('throws when customer is inactive', async () => {
     const customerRepository: CustomerRepository = {
@@ -51,13 +64,13 @@ describe('SaveSaleUseCase', () => {
     };
 
     const useCase = new SaveSaleUseCase({
-      saleRepository,
+      unitOfWork,
       customerRepository,
     });
 
-    await expect(useCase.execute(baseSale)).rejects.toThrow(
-      'CUSTOMER_INACTIVE',
-    );
+    await expect(
+      useCase.execute({ ...baseSale, transactionId }),
+    ).rejects.toThrow('CUSTOMER_INACTIVE');
   });
 
   it('applies premium discount automatically', async () => {
@@ -66,13 +79,14 @@ describe('SaveSaleUseCase', () => {
     };
 
     const useCase = new SaveSaleUseCase({
-      saleRepository,
+      unitOfWork,
       customerRepository,
     });
 
     const result = await useCase.execute({
       ...baseSale,
       customerId: activePremium.id,
+      transactionId,
     });
 
     expect(result.discount).toBe(10);
@@ -85,13 +99,14 @@ describe('SaveSaleUseCase', () => {
     };
 
     const useCase = new SaveSaleUseCase({
-      saleRepository,
+      unitOfWork,
       customerRepository,
     });
 
     const result = await useCase.execute({
       ...baseSale,
       discount: 3,
+      transactionId,
     });
 
     expect(result.discount).toBe(3);
@@ -104,7 +119,7 @@ describe('SaveSaleUseCase', () => {
     };
 
     const useCase = new SaveSaleUseCase({
-      saleRepository,
+      unitOfWork,
       customerRepository,
     });
 
@@ -112,6 +127,7 @@ describe('SaveSaleUseCase', () => {
       useCase.execute({
         ...baseSale,
         items: [{ ...baseSale.items[0], quantity: 0 }],
+        transactionId,
       }),
     ).rejects.toThrow('SALE_VALIDATION_FAILED');
   });
