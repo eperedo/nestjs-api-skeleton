@@ -1,4 +1,5 @@
 import { Id } from 'src/shared/domain/Base';
+import type { Logger } from 'src/shared/domain/Logger';
 import { Maybe } from 'src/shared/utils/ts-utils';
 import { Category } from 'src/categories/domain/entities/Category';
 import { CategoryRepository } from 'src/categories/domain/repositories/CategoryRepository';
@@ -15,6 +16,7 @@ export class GetProductByIdUseCase {
     private options: {
       productRepository: ProductRepository;
       categoryRepository: CategoryRepository;
+      logger: Logger;
     },
   ) {}
 
@@ -25,6 +27,7 @@ export class GetProductByIdUseCase {
       ? await this.options.categoryRepository.getById(product.categoryId)
       : undefined;
 
+    this.options.logger.info('usecase.getProductById.success', { ...product });
     return { product, category };
   }
 }

@@ -5,3 +5,4 @@ export const SALE_REPOSITORY = Symbol('SALE_REPOSITORY');
 export const TRANSACTION_REPOSITORY = Symbol('TRANSACTION_REPOSITORY');
 export const UNIT_OF_WORK = Symbol('UNIT_OF_WORK');
 export const CUSTOMER_REPOSITORY = Symbol('CUSTOMER_REPOSITORY');
+export const LOGGER = Symbol('LOGGER');

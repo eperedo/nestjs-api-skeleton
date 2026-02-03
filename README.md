@@ -9,7 +9,7 @@ Skeleton para proyectos con NestJS donde la **lógica de dominio** y la **implem
 - **NestJS solo como delivery**: módulos, controllers y DTOs viven en `src/[modulo]/api` y solo hacen wiring + transporte. No contienen reglas de negocio.
 - **Inyección por tokens**: los repositorios se registran en Nest con tokens (`src/tokens`) para mantener el acoplamiento bajo.
 
-Si cambias NestJS por otro framework (Express, Hono, etc.), **el `domain` y `data` de cada módulo deben seguir funcionando sin cambios**. Solo cambia la capa `api`.
+Si cambia NestJS por otro framework (Express, Hono, etc.), **el `domain` y `data` de cada módulo deben seguir funcionando sin modificaciones**. Solo cambia la capa `api`.
 
 ## Estructura recomendada (por módulo)
 

@@ -9,19 +9,22 @@ import { ProductsController } from './products.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import {
   CATEGORY_REPOSITORY,
+  LOGGER,
   PRODUCT_REPOSITORY,
   USER_REPOSITORY,
 } from 'src/tokens/repository-tokens';
+import { LoggerModule } from 'src/shared/logger/logger.module';
+import type { Logger } from 'src/shared/domain/Logger';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, LoggerModule],
   controllers: [ProductsController],
   providers: [
     {
       provide: PRODUCT_REPOSITORY,
-      useFactory: (prismaClient: PrismaClient) =>
-        new ProductPrismaRepository(prismaClient),
-      inject: [PrismaClient],
+      useFactory: (prismaClient: PrismaClient, logger: Logger) =>
+        new ProductPrismaRepository(prismaClient, logger),
+      inject: [PrismaClient, LOGGER],
     },
     {
       provide: CATEGORY_REPOSITORY,
@@ -40,8 +43,14 @@ import {
       useFactory: (
         productRepository: ProductPrismaRepository,
         categoryRepository: CategoryPrismaRepository,
-      ) => new GetProductByIdUseCase({ productRepository, categoryRepository }),
-      inject: [PRODUCT_REPOSITORY, CATEGORY_REPOSITORY],
+        logger: Logger,
+      ) =>
+        new GetProductByIdUseCase({
+          productRepository,
+          categoryRepository,
+          logger,
+        }),
+      inject: [PRODUCT_REPOSITORY, CATEGORY_REPOSITORY, LOGGER],
     },
     {
       provide: SaveProductUseCase,
